@@ -5,13 +5,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nfckey.util.MifareClassic1kTag
 import com.example.nfckey.util.MutableTag
+import dagger.hilt.android.HiltAndroidApp
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ApplicationViewModel : ViewModel() {
+@HiltViewModel
+class ApplicationViewModel @Inject constructor(): ViewModel() {
     private val _tagState: MutableStateFlow<Tag?> = MutableStateFlow(null)
     val tagState: StateFlow<Tag?> = _tagState
 

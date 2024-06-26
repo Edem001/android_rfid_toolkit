@@ -34,13 +34,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.nfckey.ui.screens.home.HomeScreen
+import com.example.nfckey.ui.screens.home.HomeScreenSmallSize
 import com.example.nfckey.ui.theme.NFCKeyTheme
 import com.example.nfckey.util.MutableTag
 import com.example.nfckey.util.NFCForegroundDispatcher
 import com.example.nfckey.util.NFCForegroundDispatcherImpl
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity(),
     NFCForegroundDispatcher by NFCForegroundDispatcherImpl() {
     private val viewModel: ApplicationViewModel by viewModels()
@@ -54,7 +58,7 @@ class MainActivity : ComponentActivity(),
                     val tag by viewModel.tagState.collectAsState()
                     val message by viewModel.tagNdefState.collectAsState()
 
-                    TagGreeting(Modifier.padding(innerPadding), tag, message)
+                    HomeScreen(viewModel)
                 }
             }
         }
