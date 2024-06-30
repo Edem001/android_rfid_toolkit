@@ -1,6 +1,8 @@
 package com.example.nfckey
 
 import android.nfc.Tag
+import android.nfc.tech.MifareClassic
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nfckey.util.MifareClassic1kTag
@@ -9,6 +11,7 @@ import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,6 +24,10 @@ class ApplicationViewModel @Inject constructor(): ViewModel() {
 
     private val _tagNdefState: MutableStateFlow<MutableTag?> = MutableStateFlow(null)
     val tagNdefState: StateFlow<MutableTag?> = _tagNdefState
+
+    val records = mutableStateOf<List<ByteArray>>(listOf())
+
+    private var key: ByteArray = ByteArray(0)
 
     fun getSummaryTagInfo(tag: Tag?) {
         viewModelScope.launch {
@@ -39,10 +46,20 @@ class ApplicationViewModel @Inject constructor(): ViewModel() {
             }
 
             tag?.let {
-                tag.read()
-                _tagNdefState.emit(tag)
+                records.value = it.read() ?: listOf()
+                _tagNdefState.emit(it)
             } ?: _tagNdefState.emit(null)
         }
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    fun setKey(key: String){
+        this.key = if (key.isBlank()) MifareClassic.KEY_DEFAULT else key.hexToByteArray()
+        tagNdefState.value?.apply {
+            this.key = this@ApplicationViewModel.key
+        }
+
+        // FIXME: create non-singular key card for testing and extend to key-per-segment functionality
     }
 
     companion object {

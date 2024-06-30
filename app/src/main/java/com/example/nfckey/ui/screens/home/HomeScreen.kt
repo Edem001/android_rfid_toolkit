@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalStdlibApi::class)
-
 package com.example.nfckey.ui.screens.home
 
 import android.nfc.Tag
@@ -7,11 +5,8 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -26,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -34,11 +28,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,6 +37,7 @@ import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.nfckey.ApplicationViewModel
 import com.example.nfckey.R
 import com.example.nfckey.ui.components.Tile
+import com.example.nfckey.ui.screens.read.TagSummary
 
 @Composable
 fun HomeScreen(viewModel: ApplicationViewModel) {
@@ -80,7 +72,6 @@ fun HomeScreenSmallSize(viewModel: ApplicationViewModel) {
                 .fillMaxSize()
                 .background(backGroundColor)
         ) {
-
             Column(
                 Modifier
                     .padding(horizontal = 20.dp, vertical = 10.dp)
@@ -88,29 +79,7 @@ fun HomeScreenSmallSize(viewModel: ApplicationViewModel) {
                     .animateContentSize()
                     .align(Alignment.CenterHorizontally),
             ) {
-                if (tag == null) {
-                    Text(
-                        "⚠\uFE0F Scan tag to get basic data",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer
-                    )
-                } else {
-                    Text(
-                        "\uD83D\uDEE0\uFE0F Tag data",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        """ID: ${tag?.id?.toHexString()}
-                        |Supported technologies: 
-                    """.trimMargin()
-                    )
-                    Text(
-                        tag?.techList?.joinToString(separator = "\n").toString(),
-                        style = TextStyle(fontStyle = FontStyle.Italic)
-                    )
-                }
+                TagSummary(tag)
             }
 
             LazyVerticalStaggeredGrid(
@@ -171,6 +140,7 @@ fun HomeScreenSmallSize(viewModel: ApplicationViewModel) {
         }
     }
 }
+
 // TODO: Medium size implementation
 @Composable
 fun HomeScreenMediumSize(viewModel: ApplicationViewModel){

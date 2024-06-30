@@ -8,7 +8,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-class MifareClassic1kTag(val tag: Tag, val key: ByteArray = MifareClassic.KEY_DEFAULT): MutableTag {
+class MifareClassic1kTag(val tag: Tag): MutableTag {
+    override var key: ByteArray = MifareClassic.KEY_DEFAULT
     private var _records: ArrayList<ByteArray>? = null
     override val records get() = _records
 
@@ -18,9 +19,9 @@ class MifareClassic1kTag(val tag: Tag, val key: ByteArray = MifareClassic.KEY_DE
 
     override suspend fun refresh() { CoroutineScope(Dispatchers.IO).launch { _records = readContents() ?: ArrayList() } }
 
-    override suspend fun read(): ArrayList<ByteArray> = records ?: readContents().also { _records = it }
+    override suspend fun read(): List<ByteArray> = records ?: readContents().also { _records = it }
 
-    @Throws(Exception::class)
+    @Throws(Exception::class, AuthException::class)
     private fun readContents(): ArrayList<ByteArray> {
         val mifare = MifareClassic.get(tag)
 
@@ -38,7 +39,7 @@ class MifareClassic1kTag(val tag: Tag, val key: ByteArray = MifareClassic.KEY_DE
                     }
 
                 } else {
-                    throw Exception("MIFARE AUTH on sector $i failed. Check key.")
+                    throw AuthException("MIFARE AUTH on sector $i failed. Check key.")
                 } // If some of sectors have different keys, another method is more suitable
             }
 
@@ -62,4 +63,6 @@ class MifareClassic1kTag(val tag: Tag, val key: ByteArray = MifareClassic.KEY_DE
         const val MIFARE_CLASSIC_1K_SECTORS = 16
         const val MIFARE_CLASSIC_1K_BLOCKS_IN_SECTOR = 4
     }
+
+    class AuthException(msg: String): Exception(msg)
 }

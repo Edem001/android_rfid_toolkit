@@ -71,6 +71,9 @@ dependencies {
     ksp(libs.dagger.compiler)
     ksp(libs.dagger.hilt.compiler)
 
+    // Compose Navigation
+    implementation(libs.androidx.navigation.compose)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
