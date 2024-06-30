@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NFCKey"
-        tools:targetApi="31">
+        tools:targetApi="34"
+        android:name=".RFIDApplication">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -25,16 +26,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-<!--            <intent-filter>-->
-<!--                <action android:name="android.nfc.action.TECH_DISCOVERED" />-->
-<!--                <action android:name="android.nfc.action.TAG_DISCOVERED" />-->
-<!--                <category android:name="android.intent.category.DEFAULT"/>-->
-<!--            </intent-filter>-->
-
-            <meta-data android:name="android.nfc.action.TECH_DISCOVERED"
-                android:resource="@xml/nfc_tech_filter"
-                />
         </activity>
 
 <!--        <service android:name=".services.NFCApduService" android:exported="true"-->
