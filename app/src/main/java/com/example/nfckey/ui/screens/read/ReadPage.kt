@@ -43,12 +43,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.nfckey.ApplicationViewModel
 import com.example.nfckey.util.DetailedTag
 
 @Composable
-fun ReadPage(mainViewModel: ApplicationViewModel){
+fun ReadPage(mainViewModel: ApplicationViewModel, navController: NavController = rememberNavController()){
 
     val tag: Tag? by mainViewModel.tagState.collectAsState()
     val detailedInfo: DetailedTag? by mainViewModel.tagNdefState.collectAsState()

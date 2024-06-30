@@ -33,27 +33,30 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.nfckey.ApplicationViewModel
 import com.example.nfckey.R
+import com.example.nfckey.navigation.AppRoutes
 import com.example.nfckey.ui.components.Tile
 import com.example.nfckey.ui.screens.read.TagSummary
 
 @Composable
-fun HomeScreen(viewModel: ApplicationViewModel) {
+fun HomeScreen(viewModel: ApplicationViewModel, navController: NavController = rememberNavController()) {
     val widthType = currentWindowAdaptiveInfo()
         .windowSizeClass
         .windowWidthSizeClass
 
     when (widthType) {
-        WindowWidthSizeClass.COMPACT -> HomeScreenSmallSize(viewModel)
+        WindowWidthSizeClass.COMPACT -> HomeScreenSmallSize(viewModel, navController)
         WindowWidthSizeClass.MEDIUM -> HomeScreenMediumSize(viewModel)
         WindowWidthSizeClass.EXPANDED -> HomeScreenExpandedSize(viewModel)
     }
 }
 
 @Composable
-fun HomeScreenSmallSize(viewModel: ApplicationViewModel) {
+fun HomeScreenSmallSize(viewModel: ApplicationViewModel, navController: NavController) {
     val tag: Tag? by viewModel.tagState.collectAsState()
     val backGroundColor =
         if (tag == null) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.background
@@ -98,7 +101,7 @@ fun HomeScreenSmallSize(viewModel: ApplicationViewModel) {
                             .padding(horizontal = 5.dp, vertical = 5.dp),
                         shadowElevation = 2.dp,
                         tonalElevation = 2.dp,
-                    ) { }
+                    ) { navController.navigate(AppRoutes.Scan.route) }
                 }
                 item {
                     Tile(

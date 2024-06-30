@@ -31,9 +31,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.nfckey.navigation.ApplicationNavHost
 import com.example.nfckey.ui.screens.home.HomeScreen
 import com.example.nfckey.ui.screens.home.HomeScreenSmallSize
 import com.example.nfckey.ui.theme.NFCKeyTheme
@@ -55,10 +59,7 @@ class MainActivity : ComponentActivity(),
         setContent {
             NFCKeyTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val tag by viewModel.tagState.collectAsState()
-                    val message by viewModel.tagNdefState.collectAsState()
-
-                    HomeScreen(viewModel)
+                    ApplicationNavHost(rememberNavController())
                 }
             }
         }
