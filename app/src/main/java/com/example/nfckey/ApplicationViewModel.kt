@@ -1,6 +1,7 @@
 package com.example.nfckey
 
 import android.nfc.Tag
+import android.nfc.TagLostException
 import android.nfc.tech.MifareClassic
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -15,6 +16,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,7 +27,8 @@ class ApplicationViewModel @Inject constructor(): ViewModel() {
     private val _tagNdefState: MutableStateFlow<MutableTag?> = MutableStateFlow(null)
     val tagNdefState: StateFlow<MutableTag?> = _tagNdefState
 
-    val records = mutableStateOf<List<ByteArray>>(listOf())
+    var records = mutableStateOf<List<ByteArray>>(listOf())
+    val recordsString = mutableStateOf<List<String>>(listOf())
 
     private var key: ByteArray = ByteArray(0)
 
@@ -36,8 +39,9 @@ class ApplicationViewModel @Inject constructor(): ViewModel() {
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     fun getDetailedTagInfo(tag: Tag){
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Default).launch {
             val tag: MutableTag? = with(tag.techList){
                 when {
                     this.contains(MIFARE_CLASSIC) -> MifareClassic1kTag(tag)
@@ -46,8 +50,26 @@ class ApplicationViewModel @Inject constructor(): ViewModel() {
             }
 
             tag?.let {
-                records.value = it.read() ?: listOf()
-                _tagNdefState.emit(it)
+                try {
+                    val rawRecords = it.read() ?: listOf()
+                    recordsString.value = rawRecords.map { bytes: ByteArray ->
+                        bytes.toHexString(
+                            HexFormat {
+                                bytes {
+                                    byteSeparator = ":"
+                                }
+                                this.upperCase = true
+                            }
+                        )
+                    }
+
+                    records.value = rawRecords
+                    _tagNdefState.emit(it)
+                } catch (e: IOException){
+                    e.printStackTrace()
+                } catch (e: TagLostException){
+                    e.printStackTrace()
+                }
             } ?: _tagNdefState.emit(null)
         }
     }

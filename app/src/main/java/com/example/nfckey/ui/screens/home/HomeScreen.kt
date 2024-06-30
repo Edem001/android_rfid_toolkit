@@ -58,11 +58,12 @@ fun HomeScreen(viewModel: ApplicationViewModel, navController: NavController = r
 @Composable
 fun HomeScreenSmallSize(viewModel: ApplicationViewModel, navController: NavController) {
     val tag: Tag? by viewModel.tagState.collectAsState()
-    val backGroundColor =
+    val backgroundColor =
         if (tag == null) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.background
 
     Scaffold(
         modifier = Modifier,
+        containerColor = backgroundColor,
         floatingActionButton = {
             FloatingActionButton(onClick = {}) {
                 Icon(ImageVector.vectorResource(R.drawable.nfc_icon), "Saved tags")
@@ -73,7 +74,6 @@ fun HomeScreenSmallSize(viewModel: ApplicationViewModel, navController: NavContr
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(backGroundColor)
         ) {
             Column(
                 Modifier
